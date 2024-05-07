@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:login/features/service/key_value_storage_service.dart';
+import 'package:login/features/service/storage_service.dart';
 
 import '../constants/environment.dart';
 import '../constants/storage_keys.dart';
@@ -8,14 +8,13 @@ import '../constants/storage_keys.dart';
 class Api {
   final Dio _dioBase = Dio(BaseOptions(baseUrl: Environment.urlBase));
 
-  final keyValueStorageService = KeyValueStorageService();
   InterceptorsWrapper interceptor = InterceptorsWrapper();
 
   Api() {
     interceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
         final token =
-            await keyValueStorageService.getKeyValue<String>(StorageKeys.token);
+            await StorageService.get<String>(StorageKeys.token);
         options.headers['Authorization'] = 'Bearer $token';
         options.headers['Accept'] = 'application/json';
 

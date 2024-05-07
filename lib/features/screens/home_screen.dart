@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Validación'),
+          title: const Center(child: Text('Usuario Validado')),
         ),
         body: const HomeView());
   }
@@ -51,9 +51,10 @@ class HomeView extends ConsumerWidget {
                 ],
               ),
               child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.logout),
-                  SizedBox(width: 20),
+                  SizedBox(width: 10),
                   Text('Salir'),
                 ],
               ),

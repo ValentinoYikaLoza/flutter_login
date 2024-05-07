@@ -7,7 +7,7 @@ import 'package:login/features/models/login_response.dart';
 import 'package:login/features/providers/auth_provider.dart';
 import 'package:login/features/providers/loader_provider.dart';
 import 'package:login/features/service/auth_service.dart';
-import 'package:login/features/service/key_value_storage_service.dart';
+import 'package:login/features/service/storage_service.dart';
 import 'package:login/features/service/service_exception.dart';
 import 'package:login/features/service/snackbar_service.dart';
 import 'package:login/features/widgets/form_wydnex.dart';
@@ -43,18 +43,16 @@ class LoginNotifier extends StateNotifier<LoginState> {
           ),
         );
   final StateNotifierProviderRef ref;
-  final keyValueStorageService = KeyValueStorageService();
 
   initData() async {
     final user =
-        await keyValueStorageService.getKeyValue<String>(StorageKeys.user) ??
+        await StorageService.get<String>(StorageKeys.user) ??
             '';
-    final rememberMe = await keyValueStorageService
-            .getKeyValue<bool>(StorageKeys.rememberMe) ??
+    final rememberMe = await StorageService.get<bool>(StorageKeys.rememberMe) ??
         false;
 
     state = state.copyWith(
-      user: rememberMe ? FormWydnex(value: user) : const FormWydnex(value: ''),
+      email: rememberMe ? FormWydnex(value: user) : const FormWydnex(value: ''),
       password: const FormWydnex(value: ''),
       rememberMe: rememberMe,
     );
@@ -67,7 +65,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     final user = FormWydnex(value: state.email.value);
     final password = FormWydnex(value: state.password.value);
     state = state.copyWith(
-      user: user,
+      email: user,
       password: password,
     );
     if (!state.isFormValid) return;
@@ -80,7 +78,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
         password: state.password.value,
       );
 
-      await keyValueStorageService.setKeyValue<String>(
+      await StorageService.set<String>(
           StorageKeys.token, loginResponse.accessToken);
 
       setRemember();
@@ -98,16 +96,16 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   setRemember() async {
     if (state.rememberMe) {
-      await keyValueStorageService.setKeyValue<String>(
+      await StorageService.set<String>(
           StorageKeys.user, state.email.value);
     }
-    await keyValueStorageService.setKeyValue<bool>(
+    await StorageService.set<bool>(
         StorageKeys.rememberMe, state.rememberMe);
   }
 
   changeUser(FormWydnex<String> user) {
     state = state.copyWith(
-      user: user,
+      email: user,
     );
   }
 
@@ -141,13 +139,13 @@ class LoginState {
   });
 
   LoginState copyWith({
-    FormWydnex<String>? user,
+    FormWydnex<String>? email,
     FormWydnex<String>? password,
     bool? loading,
     bool? rememberMe,
   }) =>
       LoginState(
-        email: user ?? this.email,
+        email: email ?? this.email,
         password: password ?? this.password,
         loading: loading ?? this.loading,
         rememberMe: rememberMe ?? this.rememberMe,

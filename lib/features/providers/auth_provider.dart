@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login/features/models/auth_user.dart';
 import 'package:login/features/service/auth_service.dart';
-import 'package:login/features/service/key_value_storage_service.dart';
+import 'package:login/features/service/storage_service.dart';
 
 import '../../../config/router/app_router.dart';
 
@@ -34,7 +34,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   logOut() async {
-    await KeyValueStorageService().removeKey('token');
+    await StorageService.remove('token');
     cancelTimer();
     appRouter.go('/login');
   }

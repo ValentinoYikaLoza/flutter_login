@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:login/features/service/key_value_storage_service.dart';
+import 'package:login/features/service/storage_service.dart';
 import 'package:login/features/service/service_exception.dart';
 
 import '../../../config/api/api.dart';
@@ -37,7 +37,7 @@ class AuthService {
   }
 
   static Future<(bool, int)> verifyToken() async {
-    final token = await KeyValueStorageService().getKeyValue<String>('token');
+    final token = await StorageService.get<String>('token');
     if (token == null) return (false, 0);
 
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
