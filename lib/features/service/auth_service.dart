@@ -58,5 +58,5 @@ class AuthService {
     }
     return (true, timeRemainingInSeconds);
   }
-
+ 
 }
