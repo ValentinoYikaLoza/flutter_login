@@ -20,11 +20,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
   LoginNotifier(this.ref)
       : super(
           LoginState(
-            email: FormWydnex<String>(
+            user: FormWydnex<String>(
               value: '',
               validators: [
                 const ValidatorWydnex(ValidatorsWydnex.required),
-                const ValidatorWydnex(ValidatorsWydnex.email),
+                const ValidatorWydnex(ValidatorsWydnex.firstName),
               ],
               formatters: [
                 LengthLimitingTextInputFormatter(20),
@@ -52,7 +52,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
         false;
 
     state = state.copyWith(
-      email: rememberMe ? FormWydnex(value: user) : const FormWydnex(value: ''),
+      user: rememberMe ? FormWydnex(value: user) : const FormWydnex(value: ''),
       password: const FormWydnex(value: ''),
       rememberMe: rememberMe,
     );
@@ -62,10 +62,10 @@ class LoginNotifier extends StateNotifier<LoginState> {
     FocusManager.instance.primaryFocus
         ?.unfocus(); //hacer que el teclado se quite
 
-    final user = FormWydnex(value: state.email.value);
+    final user = FormWydnex(value: state.user.value);
     final password = FormWydnex(value: state.password.value);
     state = state.copyWith(
-      email: user,
+      user: user,
       password: password,
     );
     if (!state.isFormValid) return;
@@ -74,12 +74,12 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
     try {
       final LoginResponse loginResponse = await AuthService.login(
-        email: state.email.value,
+        user: state.user.value,
         password: state.password.value,
       );
 
       await StorageService.set<String>(
-          StorageKeys.token, loginResponse.accessToken);
+          StorageKeys.token, loginResponse.token);
 
       setRemember();
       //cada vez que inicia sesion habilita las notificaciones
@@ -97,7 +97,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
   setRemember() async {
     if (state.rememberMe) {
       await StorageService.set<String>(
-          StorageKeys.user, state.email.value);
+          StorageKeys.user, state.user.value);
     }
     await StorageService.set<bool>(
         StorageKeys.rememberMe, state.rememberMe);
@@ -105,7 +105,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   changeUser(FormWydnex<String> user) {
     state = state.copyWith(
-      email: user,
+      user: user,
     );
   }
 
@@ -123,29 +123,29 @@ class LoginNotifier extends StateNotifier<LoginState> {
 }
 
 class LoginState {
-  final FormWydnex<String> email;
+  final FormWydnex<String> user;
   final FormWydnex<String> password;
   final bool loading;
   final bool rememberMe;
   bool get isFormValid{
-    return email.isValid && password.isValid;
+    return user.isValid && password.isValid;
   }
 
   LoginState({
-    required this.email,
+    required this.user,
     required this.password,
     this.loading = false,
     this.rememberMe = false,
   });
 
   LoginState copyWith({
-    FormWydnex<String>? email,
+    FormWydnex<String>? user,
     FormWydnex<String>? password,
     bool? loading,
     bool? rememberMe,
   }) =>
       LoginState(
-        email: email ?? this.email,
+        user: user ?? this.user,
         password: password ?? this.password,
         loading: loading ?? this.loading,
         rememberMe: rememberMe ?? this.rememberMe,

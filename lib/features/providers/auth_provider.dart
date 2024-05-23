@@ -20,7 +20,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final StateNotifierProviderRef ref;
   
   Timer? timer;
-
+  
   initAutoLogout() async {
     cancelTimer();
     final (validToken, timeRemainingInSeconds) =

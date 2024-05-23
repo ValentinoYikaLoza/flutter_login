@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:login/features/service/storage_service.dart';
 
-import '../constants/environment.dart';
+// import '../constants/environment.dart';
 import '../constants/storage_keys.dart';
 
 
 class Api {
-  final Dio _dioBase = Dio(BaseOptions(baseUrl: Environment.urlBase));
+  final Dio _dioBase = Dio(BaseOptions(baseUrl: 'https://9375-190-237-20-41.ngrok-free.app/'));
 
   InterceptorsWrapper interceptor = InterceptorsWrapper();
 

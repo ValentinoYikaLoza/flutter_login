@@ -6,5 +6,4 @@ class Environment {
   }
 
   static String urlBase = dotenv.env['URL_BASE'] ?? 'No URL_BASE';
-  static String urlImages = dotenv.env['URL_IMAGES'] ?? 'No URL_IMAGES';
 }

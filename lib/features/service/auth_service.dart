@@ -6,23 +6,26 @@ import 'package:login/features/service/service_exception.dart';
 import '../../../config/api/api.dart';
 import '../models/login_response.dart';
 
-
 final api = Api();
 
 class AuthService {
   static Future<LoginResponse> login({
-    required String email,
+    required String user,
     required String password,
   }) async {
     try {
       Map<String, dynamic> form = {
-        "email": email, //Cambiar según como lo tengan en el API
-        "password": password,
+        'username': user,
+        'password': password,
       };
 
       final response = await api.post('/login', data: form);
-
-      return LoginResponse.fromJson(response.data);
+      // Verifica el código de estado de la respuesta
+      if (response.statusCode == 200) {
+        return LoginResponse.fromJson(response.data);
+      } else {
+        throw ServiceException('Usuario o contraseña incorrecta');
+      }
     } on DioException catch (e) {
       String errorMessage = '';
       if (e.response?.statusCode == 401) {
@@ -36,6 +39,7 @@ class AuthService {
     }
   }
 
+  //JSON WEB TOKENS
   static Future<(bool, int)> verifyToken() async {
     final token = await StorageService.get<String>('token');
     if (token == null) return (false, 0);
@@ -58,5 +62,4 @@ class AuthService {
     }
     return (true, timeRemainingInSeconds);
   }
-
 }

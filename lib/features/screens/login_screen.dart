@@ -54,7 +54,7 @@ class LoginViewState extends ConsumerState<LoginView> {
 
           InputWydnex(
             label: 'Usuario',
-            value: loginState.email,
+            value: loginState.user,
             keyboardType: TextInputType.name,
             onChanged: (value) {
               ref.read(loginProvider.notifier).changeUser(value);
